@@ -1,14 +1,8 @@
-FROM maven:3-openjdk-17-slim AS build
+FROM maven:3-openjdk-17-slim
 
-WORKDIR /app
 COPY pom.xml ./
 COPY src ./src
 
-RUN mvn -f pom.xml clean package
+RUN mvn compile
 
-RUN ls target
-FROM openjdk:17-slim
-
-COPY --from=build /app/target/HybridPQC-1.0-SNAPSHOT.jar HybridPQC.jar
-
-ENTRYPOINT ["java","-jar","HybridPQC.jar"]
+ENTRYPOINT ["mvn", "exec:java", "-Dexec.mainClass=Main"]
